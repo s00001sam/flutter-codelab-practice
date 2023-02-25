@@ -198,13 +198,19 @@ class BigCard extends StatelessWidget {
       child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: AnimatedSize(
-            duration: Duration(milliseconds: 200),
-            child: Text(
-              pair.asLowerCase,
-              style: textStyle,
-              semanticsLabel: pair.asPascalCase,
-            ),
-          )),
+              duration: Duration(milliseconds: 200),
+              child: MergeSemantics(child: Wrap(
+                children: [
+                  Text(
+                    pair.first,
+                    style: textStyle,
+                  ),
+                  Text(
+                    pair.second,
+                    style: textStyle?.copyWith(fontWeight: FontWeight.w400),
+                  ),
+                ],,)
+              ))),
     );
   }
 }
