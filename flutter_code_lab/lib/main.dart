@@ -17,7 +17,8 @@ class MyApp extends StatelessWidget {
         title: 'Namer App',
         theme: ThemeData(
           useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
+          colorScheme: ColorScheme.fromSeed(
+              seedColor: Color.fromARGB(255, 160, 200, 239)),
         ),
         home: MyHomePage(),
       ),
@@ -38,19 +39,60 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
+    var pair = appState.current;
 
     return Scaffold(
-      body: Column(
-        children: [
-          Text('Sam has a random idea:'),
-          Text(appState.current.asCamelCase),
-          ElevatedButton(
-            onPressed: () {
-              appState.getNext();
-            },
-            child: Text('Next'),
-          ),
-        ],
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            BigCard(pair: pair),
+            SizedBox(
+              height: 16,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                appState.getNext();
+              },
+              child: Text('Next'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class BigCard extends StatelessWidget {
+  const BigCard({
+    super.key,
+    required this.pair,
+  });
+
+  final WordPair pair;
+
+  @override
+  Widget build(BuildContext context) {
+    var theme = Theme.of(context);
+    var textStyle = theme.textTheme.displayMedium?.copyWith(
+        color: theme.colorScheme.onPrimary, fontWeight: FontWeight.bold);
+
+    return Card(
+      color: theme.colorScheme.secondary,
+      elevation: 8.0,
+      shape: Border(
+        top: BorderSide(width: 6.0, color: Colors.black12),
+        left: BorderSide(width: 6.0, color: Colors.black12),
+        right: BorderSide(width: 6.0, color: Colors.black26),
+        bottom: BorderSide(width: 6.0, color: Colors.black26),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Text(
+          pair.asLowerCase,
+          style: textStyle,
+          semanticsLabel: pair.asPascalCase,
+        ),
       ),
     );
   }
