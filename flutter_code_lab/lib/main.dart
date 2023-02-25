@@ -199,7 +199,8 @@ class BigCard extends StatelessWidget {
           padding: const EdgeInsets.all(20.0),
           child: AnimatedSize(
               duration: Duration(milliseconds: 200),
-              child: MergeSemantics(child: Wrap(
+              child: MergeSemantics(
+                  child: Wrap(
                 children: [
                   Text(
                     pair.first,
@@ -209,8 +210,8 @@ class BigCard extends StatelessWidget {
                     pair.second,
                     style: textStyle?.copyWith(fontWeight: FontWeight.w400),
                   ),
-                ],,)
-              ))),
+                ],
+              )))),
     );
   }
 }
@@ -220,33 +221,41 @@ class FavoritesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
     var favorites = appState.favorites;
+    final wordTxt = favorites.length > 1 ? 'words' : 'word';
 
     if (favorites.isEmpty) {
       return Center(
-        child: Text('You have no favorite word.'),
+        child: Text("You don't have any favorite words."),
       );
     }
 
-    return ListView(
+    return Column(
       children: [
-        ListTile(
-          title: Text('You have ${favorites.length} Favorites :'),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text('You have ${favorites.length} favorite $wordTxt :'),
         ),
-        for (var favorite in favorites)
-          ListTile(
-            title: Row(
-              children: [
-                Text(favorite.asLowerCase),
-                SizedBox(width: 10),
-                IconButton(
+        Expanded(
+            child: GridView.extent(
+          maxCrossAxisExtent: 400,
+          childAspectRatio: 400 / 80,
+          children: [
+            for (var favorite in favorites)
+              ListTile(
+                leading: IconButton(
                   icon: Icon(Icons.delete),
                   onPressed: () {
                     appState.removeFavorite(favorite);
                   },
-                )
-              ],
-            ),
-          )
+                ),
+                title: Row(
+                  children: [
+                    Text(favorite.asLowerCase),
+                  ],
+                ),
+              )
+          ],
+        ))
       ],
     );
   }
