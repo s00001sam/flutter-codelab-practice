@@ -42,6 +42,11 @@ class MyAppState extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  void removeFavorite(WordPair favorite) {
+    favorites.remove(favorite);
+    notifyListeners();
+  }
 }
 
 class MyHomePage extends StatefulWidget {
@@ -60,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
         page = GeneratorPage();
         break;
       case 1:
-        page = Placeholder();
+        page = FavoritesPage();
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
@@ -181,6 +186,43 @@ class BigCard extends StatelessWidget {
           semanticsLabel: pair.asPascalCase,
         ),
       ),
+    );
+  }
+}
+
+class FavoritesPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var appState = context.watch<MyAppState>();
+    var favorites = appState.favorites;
+
+    if (favorites.isEmpty) {
+      return Center(
+        child: Text('You have no favorite word.'),
+      );
+    }
+
+    return ListView(
+      children: [
+        ListTile(
+          title: Text('You have ${favorites.length} Favorites :'),
+        ),
+        for (var favorite in favorites)
+          ListTile(
+            title: Row(
+              children: [
+                Text(favorite.asLowerCase),
+                SizedBox(width: 10),
+                IconButton(
+                  icon: Icon(Icons.delete),
+                  onPressed: () {
+                    appState.removeFavorite(favorite);
+                  },
+                )
+              ],
+            ),
+          )
+      ],
     );
   }
 }
